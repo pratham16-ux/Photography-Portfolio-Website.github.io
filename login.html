@@ -48,10 +48,20 @@
     border-right:1px solid var(--line);
   }
   .auth-visual .mark{
+    display:flex;
+    align-items:center;
+    gap:10px;
     font-family:var(--ff-serif);
     font-size:20px;
     color:var(--ivory);
     letter-spacing:.02em;
+  }
+  .auth-visual .mark img{
+    width:32px;
+    height:32px;
+    border-radius:8px;
+    object-fit:cover;
+    border:1px solid rgba(201,162,75,0.35);
   }
   .auth-visual .frame-number{
     font-family:var(--ff-sans);
@@ -90,6 +100,27 @@
   .auth-box{
     width:100%;
     max-width:380px;
+  }
+  .auth-box-logo{
+    display:none;
+    align-items:center;
+    gap:10px;
+    margin-bottom:26px;
+  }
+  .auth-box-logo img{
+    width:34px;
+    height:34px;
+    border-radius:8px;
+    object-fit:cover;
+    border:1px solid var(--line);
+  }
+  .auth-box-logo span{
+    font-family:var(--ff-serif);
+    font-size:19px;
+    color:var(--ivory);
+  }
+  @media (max-width:860px){
+    .auth-box-logo{display:flex;}
   }
   .auth-title{
     font-family:var(--ff-serif);
@@ -264,67 +295,6 @@
   }
   .forgot-link:hover{color:var(--gold-light);}
 
-  /* Forgot password modal */
-  .modal-overlay{
-    position:fixed; inset:0;
-    background:rgba(10,9,7,0.65);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    z-index:10;
-  }
-  .modal-overlay.show{display:flex;}
-  .modal-box{
-    width:100%;
-    max-width:360px;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:30px;
-  }
-  .modal-box h2{
-    font-family:var(--ff-serif);
-    font-weight:500;
-    font-size:22px;
-    color:var(--ivory);
-    margin:0 0 6px;
-  }
-  .modal-box p{
-    color:var(--stone);
-    font-size:13.5px;
-    line-height:1.55;
-    margin:0 0 20px;
-  }
-  .modal-actions{
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-  }
-  .modal-actions button{
-    flex:1;
-    padding:11px;
-    border-radius:8px;
-    font-family:var(--ff-sans);
-    font-size:13.5px;
-    font-weight:500;
-    cursor:pointer;
-    border:1px solid var(--line);
-  }
-  .modal-cancel{background:transparent; color:var(--stone);}
-  .modal-cancel:hover{color:var(--ivory); border-color:var(--stone);}
-  .modal-send{background:var(--gold); color:var(--ink); border-color:var(--gold); font-weight:600;}
-  .modal-send:hover{background:var(--gold-light);}
-  .modal-success{
-    display:none;
-    align-items:center;
-    gap:10px;
-    color:var(--gold-light);
-    font-size:13.5px;
-    margin-top:14px;
-  }
-  .modal-success.show{display:flex;}
-
   .auth-signup{
     text-align:center;
     font-size:13px;
@@ -344,26 +314,6 @@
     cursor:pointer;
   }
   .signup-link:hover{color:var(--gold);}
-
-  .field-select{
-    width:100%;
-    padding:12px 14px;
-    background:var(--panel-2);
-    border:1px solid var(--line);
-    border-radius:8px;
-    color:var(--ivory);
-    font-family:var(--ff-sans);
-    font-size:15px;
-    outline:none;
-    appearance:none;
-    background-image:linear-gradient(45deg, transparent 50%, var(--stone) 50%), linear-gradient(135deg, var(--stone) 50%, transparent 50%);
-    background-position:calc(100% - 18px) center, calc(100% - 13px) center;
-    background-size:5px 5px, 5px 5px;
-    background-repeat:no-repeat;
-  }
-  .field-select:focus{border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,162,75,0.18);}
-
-  .modal-box.wide{max-width:400px;}
 
   .auth-hint{
     color:var(--stone);
@@ -398,7 +348,10 @@
   <div class="auth-visual">
     <div class="corner-frame"></div>
     <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-      <span class="mark">Stackly</span>
+      <span class="mark">
+        <img src="https://wsrv.nl/?url=https://snabsolutions.in/wp-content/uploads/2026/02/stackly-snab-solutions.png&w=280&output=webp&q=85&fit=cover&tint=D4AF37" alt="Stackly logo">
+        Stackly
+      </span>
       <span class="frame-number">No. 014 / 026</span>
     </div>
     <div>
@@ -409,6 +362,10 @@
 
   <div class="auth-side">
     <div class="auth-box">
+      <div class="auth-box-logo">
+        <img src="https://wsrv.nl/?url=https://snabsolutions.in/wp-content/uploads/2026/02/stackly-snab-solutions.png&w=280&output=webp&q=85&fit=cover&tint=D4AF37" alt="Stackly logo">
+        <span>Stackly</span>
+      </div>
       <h1 class="auth-title">Sign in</h1>
       <p class="auth-sub">Access your galleries, invoices, and shoot schedule.</p>
 
@@ -452,23 +409,6 @@
 
 </div>
 
-<div class="modal-overlay" id="forgotOverlay" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
-  <div class="modal-box">
-    <h2 id="forgotTitle">Reset your password</h2>
-    <p>Enter the email linked to your account. We'll send a reset link if it matches.</p>
-    <div class="auth-field">
-      <label for="resetEmail">Email</label>
-      <input type="email" id="resetEmail" placeholder="e.g. client@stackly.in">
-      <div class="auth-err" id="resetErr"></div>
-    </div>
-    <div class="modal-success" id="resetSuccess">✓ Reset link sent — check your inbox.</div>
-    <div class="modal-actions">
-      <button type="button" class="modal-cancel" id="forgotCancel">Cancel</button>
-      <button type="button" class="modal-send" id="forgotSend">Send reset link</button>
-    </div>
-  </div>
-</div>
-
 <script>
   let currentRole = 'client';
   const roleBtns = document.querySelectorAll('.role-btn');
@@ -504,51 +444,9 @@
     }
   } catch(err) {}
 
-  // Forgot password modal
-  const forgotBtn = document.getElementById('forgotBtn');
-  const forgotOverlay = document.getElementById('forgotOverlay');
-  const forgotCancel = document.getElementById('forgotCancel');
-  const forgotSend = document.getElementById('forgotSend');
-  const resetEmail = document.getElementById('resetEmail');
-  const resetErr = document.getElementById('resetErr');
-  const resetSuccess = document.getElementById('resetSuccess');
-
-  function openForgot(){
-    forgotOverlay.classList.add('show');
-    resetEmail.value = idInput.value.includes('@') ? idInput.value : '';
-    resetEmail.classList.remove('invalid');
-    resetErr.classList.remove('show');
-    resetSuccess.classList.remove('show');
-    forgotSend.disabled = false;
-    forgotSend.textContent = 'Send reset link';
-    setTimeout(() => resetEmail.focus(), 50);
-  }
-  function closeForgot(){
-    forgotOverlay.classList.remove('show');
-  }
-
-  forgotBtn.addEventListener('click', openForgot);
-  forgotCancel.addEventListener('click', closeForgot);
-  forgotOverlay.addEventListener('click', (e) => { if (e.target === forgotOverlay) closeForgot(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeForgot(); });
-
-  forgotSend.addEventListener('click', () => {
-    const email = resetEmail.value.trim();
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!valid) {
-      resetErr.textContent = 'Enter a valid email address.';
-      resetErr.classList.add('show');
-      resetEmail.classList.add('invalid');
-      return;
-    }
-    resetErr.classList.remove('show');
-    resetEmail.classList.remove('invalid');
-    forgotSend.disabled = true;
-    forgotSend.textContent = 'Sending…';
-    setTimeout(() => {
-      resetSuccess.classList.add('show');
-      forgotSend.textContent = 'Link sent';
-    }, 700);
+  // Forgot password -> redirect to 404 page
+  document.getElementById('forgotBtn').addEventListener('click', () => {
+    window.location.href = '404.html';
   });
 
   signupBtn.addEventListener('click', () => { window.location.href = 'signup.html'; });
