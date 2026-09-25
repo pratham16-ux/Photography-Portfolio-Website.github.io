@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Stackly Photography</title>
+<link rel="icon" href="https://wsrv.nl/?url=https://snabsolutions.in/wp-content/uploads/2026/02/stackly-snab-solutions.png&w=280&output=webp&q=85&fit=cover&tint=D4AF37">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  *{box-sizing:border-box;}
+  body{background:#0F0E0C;font-family:var(--ff-sans);}
+  .app{display:flex;min-height:100vh;}
+
+  .sidebar{width:250px;background:var(--charcoal);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;}
+  .sb-logo{padding:26px 24px;border-bottom:1px solid var(--line);}
+  .sb-logo img{height:32px;}
+  .sb-badge{display:inline-block;margin-top:10px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-light);background:rgba(212,175,55,.12);border:1px solid var(--line);padding:4px 10px;border-radius:12px;}
+  .sb-nav{flex:1;padding:18px 12px;}
+  .sb-link{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;color:var(--stone);font-size:14px;cursor:pointer;margin-bottom:4px;transition:.2s;border:1px solid transparent;}
+  .sb-link .ic{width:18px;text-align:center;font-size:15px;}
+  .sb-link:hover{color:var(--ivory);background:var(--charcoal-2);}
+  .sb-link.active{color:var(--gold-light);background:rgba(212,175,55,.1);border-color:var(--line);}
+  .sb-foot{padding:18px;border-top:1px solid var(--line);}
+  .sb-user{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .sb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;color:var(--ink);font-weight:700;font-size:14px;flex-shrink:0;}
+  .sb-user-info{overflow:hidden;}
+  .sb-user-info .nm{color:var(--ivory);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sb-user-info .rl{color:var(--stone);font-size:11px;}
+  .sb-logout{width:100%;padding:9px;background:transparent;border:1px solid var(--line);color:var(--ivory);border-radius:7px;font-size:12.5px;cursor:pointer;transition:.2s;}
+  .sb-logout:hover{border-color:var(--gold);color:var(--gold-light);}
+
+  .main{flex:1;min-width:0;}
+  .topbar{background:var(--charcoal-2);border-bottom:1px solid var(--line);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+  .topbar h2{font-family:var(--ff-serif);font-size:20px;color:var(--ivory);font-weight:600;}
+  .topbar .right{display:flex;align-items:center;gap:14px;}
+  .id-pill{background:var(--ink);border:1px solid var(--line);color:var(--gold-light);padding:8px 16px;border-radius:20px;font-size:12.5px;display:flex;align-items:center;gap:8px;}
+  .id-pill .dot{width:7px;height:7px;border-radius:50%;background:#5cbf7d;}
+  .content{padding:32px;max-width:1220px;}
+
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeUp .35s ease;}
+
+  .hello{font-family:var(--ff-serif);font-size:27px;color:var(--ivory);margin-bottom:4px;}
+  .subline{color:var(--stone);font-size:13.5px;margin-bottom:26px;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:30px;}
+  .stat{background:var(--charcoal);border:1px solid var(--line);border-radius:14px;padding:20px 22px;}
+  .stat .top{display:flex;justify-content:space-between;align-items:flex-start;}
+  .stat .ic{width:38px;height:38px;border-radius:10px;background:rgba(212,175,55,.12);color:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:17px;}
+  .stat .delta{font-size:11px;color:#5cbf7d;background:rgba(70,160,90,.14);padding:3px 8px;border-radius:10px;}
+  .stat .num{font-family:var(--ff-serif);font-size:28px;color:var(--ivory);margin-top:12px;}
+  .stat .lbl{font-size:12px;color:var(--stone);margin-top:2px;}
+
+  .grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-bottom:30px;}
+  @media(max-width:900px){.grid-2{grid-template-columns:1fr;}}
+  .panel-box{background:var(--charcoal);border:1px solid var(--line);border-radius:14px;padding:22px;}
+  .panel-box h3{font-family:var(--ff-serif);color:var(--ivory);font-size:16px;margin-bottom:16px;}
+
+  .bar-chart{display:flex;align-items:flex-end;gap:14px;height:140px;padding-top:10px;}
+  .bar-chart .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .bar-chart .bar{width:100%;background:linear-gradient(180deg,var(--gold-light),var(--gold-dark));border-radius:5px 5px 0 0;transition:.6s cubic-bezier(.16,.84,.44,1);}
+  .bar-chart .bar-lbl{font-size:10.5px;color:var(--stone);}
+
+  .activity-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .activity-item:last-child{border-bottom:none;}
+  .activity-item .a-ic{width:30px;height:30px;border-radius:50%;background:var(--charcoal-2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+  .activity-item .a-text{color:var(--ivory);}
+  .activity-item .a-time{color:var(--stone);font-size:10.5px;margin-top:2px;}
+
+  .section-title{font-family:var(--ff-serif);font-size:17px;color:var(--ivory);margin:8px 0 14px;}
+
+  table{width:100%;border-collapse:collapse;background:var(--charcoal);border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+  th,td{padding:14px 18px;text-align:left;font-size:13px;color:var(--ivory);border-bottom:1px solid var(--line);}
+  th{color:var(--stone);text-transform:uppercase;font-size:10.5px;letter-spacing:.06em;background:var(--charcoal-2);}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(212,175,55,.03);}
+  .status{display:inline-block;padding:4px 11px;border-radius:20px;font-size:10.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;}
+  .status.confirmed{background:rgba(70,160,90,.16);color:#5cbf7d;}
+  .status.pending{background:rgba(212,175,55,.16);color:var(--gold-light);}
+  .status.cancelled{background:rgba(232,116,106,.16);color:#e8746a;}
+  .row-actions button{background:transparent;border:1px solid var(--line);color:var(--ivory);padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer;margin-right:6px;transition:.2s;}
+  .row-actions button:hover{border-color:var(--gold);color:var(--gold-light);}
+  .table-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+  .search-input{background:var(--charcoal);border:1px solid var(--line);color:var(--ivory);padding:9px 14px;border-radius:8px;font-size:13px;width:220px;outline:none;}
+  .search-input:focus{border-color:var(--gold);}
+  .btn-mini{padding:9px 18px;background:var(--gold);color:var(--ink);border:none;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.2s;}
+  .btn-mini:hover{background:var(--gold-light);}
+  .btn-mini.outline{background:transparent;color:var(--ivory);border:1px solid var(--line);}
+  .btn-mini.outline:hover{border-color:var(--gold);color:var(--gold-light);}
+
+  .card-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+  .dcard{background:var(--charcoal);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .dcard h4{font-family:var(--ff-serif);color:var(--ivory);margin-bottom:6px;font-size:16px;}
+  .dcard p{font-size:12.5px;color:var(--stone);line-height:1.7;margin-top:6px;}
+  .dcard .tagrow{margin-top:12px;display:flex;gap:8px;}
+  .chip{font-size:10.5px;padding:3px 9px;border-radius:10px;background:var(--charcoal-2);color:var(--stone);border:1px solid var(--line);}
+
+  .team-card{background:var(--charcoal);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center;}
+  .team-card .t-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--gold-light),var(--gold-dark));display:flex;align-items:center;justify-content:center;color:var(--ink);font-weight:700;font-size:22px;}
+  .team-card h4{font-family:var(--ff-serif);color:var(--ivory);font-size:15px;}
+  .team-card .role{font-size:11.5px;color:var(--gold-light);margin-top:2px;}
+  .team-card .stats{display:flex;justify-content:center;gap:16px;margin-top:12px;font-size:11px;color:var(--stone);}
+  .revenue-line{position:relative;height:150px;margin-top:10px;}
+
+  .gallery-mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;}
+  .gallery-mini .g-wrap{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1;cursor:pointer;}
+  .gallery-mini img{width:100%;height:100%;object-fit:cover;transition:.35s;}
+  .gallery-mini .g-wrap:hover img{transform:scale(1.06);}
+  .upload-box{border:2px dashed var(--line);border-radius:12px;padding:36px;text-align:center;color:var(--stone);cursor:pointer;margin-bottom:20px;transition:.2s;font-size:13.5px;}
+  .upload-box:hover{border-color:var(--gold);color:var(--gold-light);}
+
+  .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:600px;}
+  .profile-grid .field{background:var(--charcoal);border:1px solid var(--line);border-radius:10px;padding:15px 17px;}
+  .profile-grid .field label{display:block;font-size:10.5px;color:var(--stone);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+  .profile-grid .field div{font-size:14.5px;color:var(--ivory);font-weight:500;}
+
+  .toast{position:fixed;bottom:26px;right:26px;background:var(--gold);color:var(--ink);padding:14px 22px;border-radius:9px;font-size:13px;font-weight:600;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;z-index:999;box-shadow:0 20px 50px -15px rgba(0,0,0,.6);}
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  @keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(92,191,125,.55);}70%{box-shadow:0 0 0 8px rgba(92,191,125,0);}100%{box-shadow:0 0 0 0 rgba(92,191,125,0);}}
+  .id-pill .dot{animation:pulseDot 2s infinite;}
+  @keyframes cardIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .stat,.dcard,.g-wrap,.activity-item,tr,.panel-box{opacity:0;animation:cardIn .5s var(--ease) forwards;}
+  .stat:nth-child(1){animation-delay:.03s}.stat:nth-child(2){animation-delay:.09s}.stat:nth-child(3){animation-delay:.15s}.stat:nth-child(4){animation-delay:.21s}
+  .activity-item:nth-child(1){animation-delay:.05s}.activity-item:nth-child(2){animation-delay:.12s}.activity-item:nth-child(3){animation-delay:.19s}.activity-item:nth-child(4){animation-delay:.26s}
+  #bookingTable tbody tr:nth-child(1){animation-delay:.03s}#bookingTable tbody tr:nth-child(2){animation-delay:.08s}#bookingTable tbody tr:nth-child(3){animation-delay:.13s}#bookingTable tbody tr:nth-child(4){animation-delay:.18s}#bookingTable tbody tr:nth-child(5){animation-delay:.23s}
+  .stat,.dcard{transition:transform .25s var(--ease),box-shadow .25s;}
+  .stat:hover{transform:translateY(-4px);box-shadow:0 18px 34px -18px rgba(212,175,55,.25);}
+  .dcard:hover{transform:translateY(-3px);border-color:rgba(212,175,55,.4);}
+
+  .bell-wrap{position:relative;}
+  .bell-btn{background:var(--ink);border:1px solid var(--line);color:var(--gold-light);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:15px;position:relative;}
+  .bell-badge{position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#e8746a;border-radius:50%;border:2px solid var(--charcoal-2);animation:pulseDot 1.8s infinite;}
+  .bell-drop{position:absolute;right:0;top:48px;width:290px;background:var(--charcoal);border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 50px -18px rgba(0,0,0,.5);padding:8px;display:none;z-index:40;}
+  .bell-drop.open{display:block;animation:cardIn .25s var(--ease);}
+  .bell-drop .bd-item{padding:11px 12px;border-radius:8px;font-size:12.5px;color:var(--ivory);cursor:pointer;}
+  .bell-drop .bd-item:hover{background:var(--charcoal-2);}
+  .bell-drop .bd-item .t{color:var(--stone);font-size:10.5px;margin-top:2px;}
+  .live-badge{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;color:#5cbf7d;background:rgba(70,160,90,.12);padding:4px 10px;border-radius:10px;margin-bottom:14px;}
+  .live-badge .d{width:6px;height:6px;background:#5cbf7d;border-radius:50%;animation:pulseDot 1.6s infinite;}
+  .ticker-new{animation:tickerFlash 1.4s ease;}
+  @keyframes tickerFlash{0%{background:rgba(212,175,55,.18);}100%{background:transparent;}}
+
+  .sb-backdrop{display:none;}
+  .burger-sb{display:none;}
+  @media(max-width:860px){
+    .sidebar{position:fixed;left:-270px;z-index:60;transition:.3s;box-shadow:0 0 60px rgba(0,0,0,.6);}
+    .sidebar.open{left:0;}
+    .sb-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:55;}
+    .sb-backdrop.show{display:block;}
+    .burger-sb{display:flex;align-items:center;justify-content:center;background:none;border:1px solid var(--line);color:var(--ivory);border-radius:8px;width:38px;height:38px;cursor:pointer;font-size:16px;flex-shrink:0;}
+    .content{padding:20px 16px 60px;}
+    .topbar{padding:14px 16px;}
+    .topbar h2{font-size:17px;}
+    .id-pill span:last-child{max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle;}
+    .bell-drop{right:-60px;width:260px;}
+    .hello{font-size:22px;}
+    .stat-row{grid-template-columns:repeat(2,1fr);gap:12px;}
+    .stat{padding:16px;}
+    .stat .num{font-size:22px;margin-top:8px;}
+    .grid-2{grid-template-columns:1fr;}
+    .card-row{grid-template-columns:1fr;}
+    .gallery-mini{grid-template-columns:repeat(2,1fr);}
+    table{display:block;}
+    table thead{display:none;}
+    table tbody{display:block;}
+    table tr{display:block;background:var(--charcoal);border-radius:10px;margin-bottom:12px;padding:6px 0;}
+    table td{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:10px 14px;}
+    table td:last-child{border-bottom:none;}
+    table td::before{content:attr(data-label);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--stone);font-weight:600;}
+    .table-toolbar{flex-direction:column;align-items:stretch;}
+    .search-input{width:100%;}
+  }
+  @media(max-width:480px){
+    .stat-row{grid-template-columns:1fr 1fr;}
+    .gallery-mini{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sb-backdrop" id="sbBackdrop"></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+    <a href="index.html"><img src="https://wsrv.nl/?url=https://snabsolutions.in/wp-content/uploads/2026/02/stackly-snab-solutions.png&w=280&output=webp&q=85&fit=cover&tint=D4AF37" alt="Stackly Photography"></a>  
+      <div class="sb-badge">Studio Admin</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-link active" data-tab="overview"><span class="ic">◆</span> Overview</div>
+      <div class="sb-link" data-tab="bookings"><span class="ic">▤</span> Bookings</div>
+      <div class="sb-link" data-tab="clients"><span class="ic">◎</span> Clients</div>
+      <div class="sb-link" data-tab="revenue"><span class="ic">₹</span> Revenue</div>
+      <div class="sb-link" data-tab="gallery"><span class="ic">▦</span> Manage Gallery</div>
+      <div class="sb-link" data-tab="team"><span class="ic">☺</span> Team</div>
+      <div class="sb-link" data-tab="profile"><span class="ic">⚙</span> Studio Profile</div>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-avatar" id="avatarInit">A</div>
+        <div class="sb-user-info"><div class="nm" id="sbName">—</div><div class="rl">Admin Account</div></div>
+      </div>
+      <button class="sb-logout" id="logoutBtn">Logout</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button class="burger-sb" id="burgerSb">☰</button>
+        <h2 id="topTitle">Overview</h2>
+      </div>
+      <div class="right">
+        <div class="bell-wrap">
+          <button class="bell-btn" id="bellBtn">🔔<span class="bell-badge"></span></button>
+          <div class="bell-drop" id="bellDrop">
+            <div class="bd-item">New enquiry received — Product Shoot<div class="t">10 min ago</div></div>
+            <div class="bd-item">Farah Khan sent a message<div class="t">5 hours ago</div></div>
+            <div class="bd-item">Anaya Kapoor's gallery uploaded<div class="t">Yesterday</div></div>
+          </div>
+        </div>
+        <div class="id-pill"><span class="dot"></span> <span id="loginIdShow">—</span></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="panel active" id="panel-overview">
+        <div class="live-badge"><span class="d"></span> Live · auto-refreshing</div>
+        <h1 class="hello">Studio Control Panel</h1>
+        <p class="subline">A snapshot of bookings, revenue and studio activity.</p>
+
+        <div class="stat-row">
+          <div class="stat"><div class="top"><div class="ic">▤</div><span class="delta">+6</span></div><div class="num" data-count="48">0</div><div class="lbl">Active Bookings</div></div>
+          <div class="stat"><div class="top"><div class="ic">◐</div></div><div class="num" data-count="12">0</div><div class="lbl">Pending Advance</div></div>
+          <div class="stat"><div class="top"><div class="ic">▦</div><span class="delta">+38</span></div><div class="num" data-count="480">0</div><div class="lbl">Projects Delivered</div></div>
+          <div class="stat"><div class="top"><div class="ic">★</div></div><div class="num" data-count="4.9" data-decimal="1">0</div><div class="lbl">Avg. Client Rating</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel-box">
+            <h3>Bookings — Last 6 Months</h3>
+            <div class="bar-chart" id="barChart">
+              <div class="bar-col"><div class="bar" style="height:0%" data-h="52%"></div><div class="bar-lbl">Apr</div></div>
+              <div class="bar-col"><div class="bar" style="height:0%" data-h="64%"></div><div class="bar-lbl">May</div></div>
+              <div class="bar-col"><div class="bar" style="height:0%" data-h="48%"></div><div class="bar-lbl">Jun</div></div>
+              <div class="bar-col"><div class="bar" style="height:0%" data-h="78%"></div><div class="bar-lbl">Jul</div></div>
+              <div class="bar-col"><div class="bar" style="height:0%" data-h="90%"></div><div class="bar-lbl">Aug</div></div>
+              <div class="bar-col"><div class="bar" style="height:0%" data-h="100%"></div><div class="bar-lbl">Sep</div></div>
+            </div>
+          </div>
+          <div class="panel-box">
+            <h3>Recent Activity</h3>
+            <div class="activity-item"><div class="a-ic">✓</div><div><div class="a-text">Booking confirmed — Rahul &amp; Divya</div><div class="a-time">2 hours ago</div></div></div>
+            <div class="activity-item"><div class="a-ic">💬</div><div><div class="a-text">New message from Farah Khan</div><div class="a-time">5 hours ago</div></div></div>
+            <div class="activity-item"><div class="a-ic">📤</div><div><div class="a-text">Gallery uploaded for Anaya Kapoor</div><div class="a-time">Yesterday</div></div></div>
+            <div class="activity-item"><div class="a-ic">✉</div><div><div class="a-text">New enquiry received — Product Shoot</div><div class="a-time">2 days ago</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-bookings">
+        <h1 class="hello">Bookings</h1>
+        <p class="subline">Manage all studio bookings in one place.</p>
+        <div class="table-toolbar">
+          <input class="search-input" id="bookingSearch" placeholder="Search by client name...">
+          <button class="btn-mini" data-action="newbooking">+ New Booking</button>
+        </div>
+        <table id="bookingTable">
+          <thead><tr><th>Client</th><th>Service</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Client">Rahul &amp; Divya Menon</td><td data-label="Service">Wedding</td><td data-label="Date">14 Dec 2026</td><td data-label="Status"><span class="status confirmed">Confirmed</span></td>
+              <td class="row-actions" data-label="Actions"><button data-action="view">View</button><button data-action="cancel">Cancel</button></td></tr>
+            <tr><td data-label="Client">Farah Khan</td><td data-label="Service">Event Coverage</td><td data-label="Date">02 Nov 2026</td><td data-label="Status"><span class="status pending">Pending</span></td>
+              <td class="row-actions" data-label="Actions"><button data-action="approve">Approve</button><button data-action="cancel">Cancel</button></td></tr>
+            <tr><td data-label="Client">Anaya Kapoor</td><td data-label="Service">Portrait Session</td><td data-label="Date">28 Oct 2026</td><td data-label="Status"><span class="status confirmed">Confirmed</span></td>
+              <td class="row-actions" data-label="Actions"><button data-action="view">View</button><button data-action="cancel">Cancel</button></td></tr>
+            <tr><td data-label="Client">Vikram Rao</td><td data-label="Service">Product Shoot</td><td data-label="Date">19 Oct 2026</td><td data-label="Status"><span class="status cancelled">Cancelled</span></td>
+              <td class="row-actions" data-label="Actions"><button data-action="view">View</button></td></tr>
+            <tr><td data-label="Client">Sneha Iyer</td><td data-label="Service">Fashion Editorial</td><td data-label="Date">05 Oct 2026</td><td data-label="Status"><span class="status pending">Pending</span></td>
+              <td class="row-actions" data-label="Actions"><button data-action="approve">Approve</button><button data-action="cancel">Cancel</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel" id="panel-clients">
+        <h1 class="hello">Clients</h1>
+        <p class="subline">All clients who've booked with the studio.</p>
+        <div class="card-row">
+          <div class="dcard"><h4>Rahul &amp; Divya Menon</h4><p>rahul.menon@email.com<br>+91 98450 00001</p><div class="tagrow"><span class="chip">3 bookings</span><span class="chip">Bengaluru</span></div></div>
+          <div class="dcard"><h4>Farah Khan</h4><p>farah.khan@email.com<br>+91 98450 00002</p><div class="tagrow"><span class="chip">1 booking</span><span class="chip">Bengaluru</span></div></div>
+          <div class="dcard"><h4>Anaya Kapoor</h4><p>anaya.k@email.com<br>+91 98450 00003</p><div class="tagrow"><span class="chip">2 bookings</span><span class="chip">Mysuru</span></div></div>
+          <div class="dcard"><h4>Vikram Rao</h4><p>vikram.rao@email.com<br>+91 98450 00004</p><div class="tagrow"><span class="chip">1 booking</span><span class="chip">Bengaluru</span></div></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-gallery">
+        <h1 class="hello">Manage Gallery</h1>
+        <p class="subline">Upload and manage portfolio &amp; client delivery images.</p>
+        <div class="upload-box" id="uploadBox">📤 Click to upload new images (demo — connect storage to enable)</div>
+        <div class="gallery-mini">
+          <div class="g-wrap"><img src="https://wsrv.nl/?url=https://picsum.photos/seed/ad1/400/400&output=webp&q=76&w=400&h=400&fit=cover" alt="Photo"></div>
+          <div class="g-wrap"><img src="https://wsrv.nl/?url=https://picsum.photos/seed/ad2/400/400&output=webp&q=76&w=400&h=400&fit=cover" alt="Photo"></div>
+          <div class="g-wrap"><img src="https://wsrv.nl/?url=https://picsum.photos/seed/ad3/400/400&output=webp&q=76&w=400&h=400&fit=cover" alt="Photo"></div>
+          <div class="g-wrap"><img src="https://wsrv.nl/?url=https://picsum.photos/seed/ad4/400/400&output=webp&q=76&w=400&h=400&fit=cover" alt="Photo"></div>
+          <div class="g-wrap"><img src="https://wsrv.nl/?url=https://picsum.photos/seed/ad5/400/400&output=webp&q=76&w=400&h=400&fit=cover" alt="Photo"></div>
+          <div class="g-wrap"><img src="https://wsrv.nl/?url=https://picsum.photos/seed/ad6/400/400&output=webp&q=76&w=400&h=400&fit=cover" alt="Photo"></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-revenue">
+        <h1 class="hello">Revenue</h1>
+        <p class="subline">Studio income overview for this quarter.</p>
+        <div class="stat-row">
+          <div class="stat"><div class="top"><div class="ic">₹</div><span class="delta">+18%</span></div><div class="num" data-count="642000">0</div><div class="lbl">Revenue (Jul–Sep)</div></div>
+          <div class="stat"><div class="top"><div class="ic">₹</div></div><div class="num" data-count="94000">0</div><div class="lbl">Pending Collections</div></div>
+          <div class="stat"><div class="top"><div class="ic">⌀</div></div><div class="num" data-count="38500">0</div><div class="lbl">Avg. Booking Value</div></div>
+        </div>
+        <div class="panel-box">
+          <h3>Monthly Revenue Trend</h3>
+          <svg class="revenue-line" viewBox="0 0 560 150" preserveAspectRatio="none" width="100%" height="150">
+            <defs><linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#D4AF37" stop-opacity=".35"/><stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/></linearGradient></defs>
+            <polygon points="0,120 90,95 180,105 270,70 360,50 450,30 540,15 540,150 0,150" fill="url(#revFill)"></polygon>
+            <polyline points="0,120 90,95 180,105 270,70 360,50 450,30 540,15" fill="none" stroke="#E8CD73" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" id="revLine" stroke-dasharray="900" stroke-dashoffset="900"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-team">
+        <h1 class="hello">Team</h1>
+        <p class="subline">Photographers, editors and staff on the Stackly roster.</p>
+        <div class="card-row">
+          <div class="team-card"><div class="t-avatar">AM</div><h4>Arjun Menon</h4><div class="role">Founder &amp; Lead Photographer</div><div class="stats"><span>142 shoots</span><span>4.9★</span></div></div>
+          <div class="team-card"><div class="t-avatar">PS</div><h4>Priya Suresh</h4><div class="role">Creative Director</div><div class="stats"><span>98 shoots</span><span>4.8★</span></div></div>
+          <div class="team-card"><div class="t-avatar">VS</div><h4>Vikram Shetty</h4><div class="role">Cinematographer</div><div class="stats"><span>76 shoots</span><span>4.9★</span></div></div>
+          <div class="team-card"><div class="t-avatar">MK</div><h4>Meera Kulkarni</h4><div class="role">Studio Manager</div><div class="stats"><span>—</span><span>—</span></div></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-profile">
+        <h1 class="hello">Studio Profile</h1>
+        <p class="subline">Studio account details.</p>
+        <div class="profile-grid">
+          <div class="field"><label>Login ID</label><div id="profileId">—</div></div>
+          <div class="field"><label>Role</label><div>Admin / Studio</div></div>
+          <div class="field"><label>Studio</label><div>Stackly Photography</div></div>
+          <div class="field"><label>Location</label><div>Indiranagar, Bengaluru</div></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const loginId = localStorage.getItem('stackly_loginId') || 'admin@stackly.in';
+  const role = localStorage.getItem('stackly_role');
+  if (role !== 'admin') { window.location.href = 'login.html'; }
+  document.getElementById('loginIdShow').textContent = loginId;
+  document.getElementById('profileId').textContent = loginId;
+  document.getElementById('sbName').textContent = loginId;
+  document.getElementById('avatarInit').textContent = loginId.trim().charAt(0).toUpperCase() || 'A';
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('stackly_loginId'); localStorage.removeItem('stackly_role');
+    window.location.href = 'login.html';
+  });
+
+  // Animated counters
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseFloat(el.dataset.count);
+    const dec = +el.dataset.decimal || 0;
+    let cur = 0; const step = target / 40;
+    (function tick(){ cur += step; if (cur >= target) { el.textContent = target.toLocaleString('en-IN',{maximumFractionDigits:dec}); } else { el.textContent = Math.round(cur).toLocaleString('en-IN'); requestAnimationFrame(tick); } })();
+  });
+
+  setTimeout(() => { const rl = document.getElementById('revLine'); if (rl) rl.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(.16,.84,.44,1)', rl.style.strokeDashoffset = '0'; }, 400);
+
+  const bellBtn = document.getElementById('bellBtn'), bellDrop = document.getElementById('bellDrop');
+  bellBtn.addEventListener('click', (e) => { e.stopPropagation(); bellDrop.classList.toggle('open'); });
+  document.addEventListener('click', () => bellDrop.classList.remove('open'));
+
+  // Live activity ticker — periodically prepend a new event
+  const liveEvents = [
+    ['📅','New booking request — Studio Portrait'],
+    ['💬','Rahul Menon replied to your message'],
+    ['⭐','5-star review received from Farah Khan'],
+    ['📤','Gallery export completed — Vikram Rao']
+  ];
+  let ei = 0;
+  setInterval(() => {
+    const feed = document.getElementById('panel-overview').querySelector('.panel-box:nth-child(2)');
+    if (!feed || !document.getElementById('panel-overview').classList.contains('active')) return;
+    const [ic, text] = liveEvents[ei % liveEvents.length]; ei++;
+    const item = document.createElement('div');
+    item.className = 'activity-item ticker-new';
+    item.style.opacity = '1';
+    item.innerHTML = `<div class="a-ic">${ic}</div><div><div class="a-text">${text}</div><div class="a-time">Just now</div></div>`;
+    const list = feed.querySelectorAll('.activity-item');
+    feed.insertBefore(item, list[0]);
+    if (list.length >= 4) list[list.length-1].remove();
+  }, 9000);
+
+  const titles = {overview:'Overview', bookings:'Bookings', clients:'Clients', revenue:'Revenue', gallery:'Manage Gallery', team:'Team', profile:'Studio Profile'};
+  const links = document.querySelectorAll('.sb-link');
+  links.forEach(link => link.addEventListener('click', () => {
+    links.forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById('panel-' + link.dataset.tab).classList.add('active');
+    document.getElementById('topTitle').textContent = titles[link.dataset.tab];
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sbBackdrop').classList.remove('show');
+  }));
+
+  document.getElementById('burgerSb').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sbBackdrop').classList.toggle('show'); });
+  document.getElementById('sbBackdrop').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbBackdrop').classList.remove('show'); });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  // animate bar chart on load
+  setTimeout(() => {
+    document.querySelectorAll('#barChart .bar').forEach(b => b.style.height = b.dataset.h);
+  }, 200);
+
+  document.querySelectorAll('[data-action]').forEach(btn => btn.addEventListener('click', () => {
+    const act = btn.dataset.action;
+    const row = btn.closest('tr');
+    if (act === 'view') showToast('Opening booking details...');
+    if (act === 'approve') { row.querySelector('.status').outerHTML = '<span class="status confirmed">Confirmed</span>'; row.classList.add('ticker-new'); showToast('Booking approved ✓'); }
+    if (act === 'cancel') { row.querySelector('.status').outerHTML = '<span class="status cancelled">Cancelled</span>'; row.classList.add('ticker-new'); showToast('Booking cancelled'); }
+    if (act === 'newbooking') showToast('Opening new booking form (demo)...');
+  }));
+
+  document.getElementById('uploadBox').addEventListener('click', () => showToast('Upload flow (demo) — connect storage to enable'));
+
+  document.getElementById('bookingSearch').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('#bookingTable tbody tr').forEach(tr => {
+      tr.style.display = tr.children[0].textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  document.querySelectorAll('.gallery-mini img').forEach(img => img.addEventListener('click', () => {
+    const lb = document.createElement('div');
+    lb.style.cssText = 'position:fixed;inset:0;background:rgba(15,14,12,.94);z-index:9998;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:40px;';
+    const im = document.createElement('img');
+    im.src = img.src; im.style.cssText = 'max-width:90vw;max-height:90vh;object-fit:contain;box-shadow:0 30px 80px rgba(0,0,0,.6);border-radius:6px;';
+    lb.appendChild(im);
+    lb.addEventListener('click', () => lb.remove());
+    document.body.appendChild(lb);
+  }));
+</script>
+</body>
+</html>

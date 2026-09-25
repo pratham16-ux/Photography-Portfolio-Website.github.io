@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Stackly Photography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15130f;
+    --panel:#1d1a15;
+    --panel-2:#252119;
+    --line:#39332a;
+    --ivory:#f3ede2;
+    --stone:#a89f8f;
+    --gold:#c9a24b;
+    --gold-light:#e0bd6e;
+    --err:#d9755f;
+    --ff-serif:'Fraunces', serif;
+    --ff-sans:'Inter', sans-serif;
+    box-sizing:border-box;
+  }
+  *{box-sizing:inherit;}
+  body{margin:0;font-family:var(--ff-sans);}
+
+  .auth-wrap{
+    min-height:100svh;
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    background:var(--ink);
+  }
+  @media (max-width:860px){
+    .auth-wrap{grid-template-columns:1fr;}
+    .auth-visual{display:none;}
+  }
+
+  /* Left: editorial visual side */
+  .auth-visual{
+    position:relative;
+    background:
+      radial-gradient(circle at 25% 20%, rgba(201,162,75,0.14), transparent 55%),
+      linear-gradient(160deg, #1a1712 0%, #100e0b 100%);
+    padding:64px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    border-right:1px solid var(--line);
+  }
+  .auth-visual .mark{
+    font-family:var(--ff-serif);
+    font-size:20px;
+    color:var(--ivory);
+    letter-spacing:.02em;
+  }
+  .auth-visual .frame-number{
+    font-family:var(--ff-sans);
+    font-size:12px;
+    color:var(--stone);
+  }
+  .auth-visual blockquote{
+    font-family:var(--ff-serif);
+    font-weight:400;
+    font-size:clamp(28px,3vw,38px);
+    line-height:1.25;
+    color:var(--ivory);
+    max-width:9.5em;
+    margin:0;
+  }
+  .auth-visual cite{
+    display:block;
+    font-style:normal;
+    font-size:13px;
+    color:var(--gold-light);
+    margin-top:18px;
+  }
+  .auth-visual .corner-frame{
+    position:absolute; inset:28px;
+    border:1px solid rgba(201,162,75,0.25);
+    pointer-events:none;
+  }
+
+  /* Right: form side */
+  .auth-side{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 24px;
+  }
+  .auth-box{
+    width:100%;
+    max-width:380px;
+  }
+  .auth-title{
+    font-family:var(--ff-serif);
+    font-weight:500;
+    font-size:30px;
+    color:var(--ivory);
+    margin:0 0 6px;
+  }
+  .auth-sub{
+    color:var(--stone);
+    font-size:14px;
+    margin:0 0 28px;
+    line-height:1.5;
+  }
+
+  /* Segmented role control */
+  .role-toggle{
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:3px;
+    margin-bottom:28px;
+  }
+  .role-toggle .thumb{
+    position:absolute;
+    top:3px; bottom:3px; left:3px;
+    width:calc(50% - 3px);
+    background:var(--gold);
+    border-radius:7px;
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+  }
+  .role-btn{
+    position:relative;
+    z-index:1;
+    padding:10px 8px;
+    text-align:center;
+    background:transparent;
+    border:none;
+    color:var(--stone);
+    cursor:pointer;
+    font-family:var(--ff-sans);
+    font-size:13.5px;
+    font-weight:500;
+    transition:color .2s;
+  }
+  .role-btn.active{color:var(--ink);}
+
+  .auth-field{margin-bottom:16px;}
+  .auth-field label{
+    display:block;
+    color:var(--stone);
+    font-size:12.5px;
+    margin-bottom:6px;
+  }
+  .auth-field input{
+    width:100%;
+    padding:12px 14px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--ivory);
+    font-family:var(--ff-sans);
+    font-size:15px;
+    outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .auth-field input::placeholder{color:#6b6252;}
+  .auth-field input:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(201,162,75,0.18);
+  }
+  .auth-field input.invalid{border-color:var(--err);}
+  .auth-field input.invalid:focus{box-shadow:0 0 0 3px rgba(217,117,95,0.18);}
+
+  .auth-err{
+    color:var(--err);
+    font-size:12.5px;
+    margin-top:6px;
+    min-height:0;
+    display:none;
+  }
+  .auth-err.show{display:block;}
+
+  .auth-submit{
+    width:100%;
+    padding:14px;
+    background:var(--gold);
+    color:var(--ink);
+    border:none;
+    border-radius:8px;
+    font-family:var(--ff-sans);
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:8px;
+    transition:background .2s, transform .1s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .auth-submit:hover{background:var(--gold-light);}
+  .auth-submit:active{transform:scale(.99);}
+  .auth-submit:focus-visible{outline:2px solid var(--gold-light); outline-offset:2px;}
+  .auth-submit[disabled]{opacity:.75; cursor:default;}
+
+  .spinner{
+    width:14px; height:14px;
+    border:2px solid rgba(21,19,15,0.3);
+    border-top-color:var(--ink);
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    display:none;
+  }
+  .auth-submit.loading .spinner{display:inline-block;}
+  .auth-submit.loading .label{opacity:.85;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .auth-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:-4px 0 4px;
+  }
+  .remember{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:var(--stone);
+    font-size:13px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .remember input{
+    appearance:none;
+    width:16px; height:16px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:var(--panel-2);
+    cursor:pointer;
+    position:relative;
+    flex-shrink:0;
+    transition:border-color .2s, background .2s;
+  }
+  .remember input:checked{
+    background:var(--gold);
+    border-color:var(--gold);
+  }
+  .remember input:checked::after{
+    content:'';
+    position:absolute;
+    left:5px; top:1px;
+    width:4px; height:8px;
+    border:solid var(--ink);
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  .remember input:focus-visible{outline:2px solid var(--gold-light); outline-offset:2px;}
+  .forgot-link{
+    background:none;
+    border:none;
+    padding:0;
+    color:var(--stone);
+    font-size:13px;
+    font-family:var(--ff-sans);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+  }
+  .forgot-link:hover{color:var(--gold-light);}
+
+  /* Forgot password modal */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(10,9,7,0.65);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:10;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    width:100%;
+    max-width:360px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:30px;
+  }
+  .modal-box h2{
+    font-family:var(--ff-serif);
+    font-weight:500;
+    font-size:22px;
+    color:var(--ivory);
+    margin:0 0 6px;
+  }
+  .modal-box p{
+    color:var(--stone);
+    font-size:13.5px;
+    line-height:1.55;
+    margin:0 0 20px;
+  }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+  }
+  .modal-actions button{
+    flex:1;
+    padding:11px;
+    border-radius:8px;
+    font-family:var(--ff-sans);
+    font-size:13.5px;
+    font-weight:500;
+    cursor:pointer;
+    border:1px solid var(--line);
+  }
+  .modal-cancel{background:transparent; color:var(--stone);}
+  .modal-cancel:hover{color:var(--ivory); border-color:var(--stone);}
+  .modal-send{background:var(--gold); color:var(--ink); border-color:var(--gold); font-weight:600;}
+  .modal-send:hover{background:var(--gold-light);}
+  .modal-success{
+    display:none;
+    align-items:center;
+    gap:10px;
+    color:var(--gold-light);
+    font-size:13.5px;
+    margin-top:14px;
+  }
+  .modal-success.show{display:flex;}
+
+  .auth-signup{
+    text-align:center;
+    font-size:13px;
+    color:var(--stone);
+    margin:18px 0 0;
+  }
+  .signup-link{
+    background:none;
+    border:none;
+    padding:0;
+    color:var(--gold-light);
+    font-size:13px;
+    font-family:var(--ff-sans);
+    font-weight:500;
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+  }
+  .signup-link:hover{color:var(--gold);}
+
+  .field-select{
+    width:100%;
+    padding:12px 14px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--ivory);
+    font-family:var(--ff-sans);
+    font-size:15px;
+    outline:none;
+    appearance:none;
+    background-image:linear-gradient(45deg, transparent 50%, var(--stone) 50%), linear-gradient(135deg, var(--stone) 50%, transparent 50%);
+    background-position:calc(100% - 18px) center, calc(100% - 13px) center;
+    background-size:5px 5px, 5px 5px;
+    background-repeat:no-repeat;
+  }
+  .field-select:focus{border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,162,75,0.18);}
+
+  .modal-box.wide{max-width:400px;}
+
+  .auth-hint{
+    color:var(--stone);
+    font-size:12.5px;
+    text-align:center;
+    margin-top:20px;
+    line-height:1.7;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+  }
+  .auth-hint b{color:var(--gold-light); font-weight:500;}
+
+  .auth-back{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:var(--stone);
+    font-size:13px;
+    text-decoration:none;
+    margin-top:22px;
+  }
+  .auth-back:hover{color:var(--gold-light);}
+
+  @media (prefers-reduced-motion: reduce){
+    .role-toggle .thumb, .auth-submit, .spinner{transition:none; animation:none;}
+  }
+</style>
+</head>
+<body>
+<div class="auth-wrap">
+
+  <div class="auth-visual">
+    <div class="corner-frame"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <span class="mark">Stackly</span>
+      <span class="frame-number">No. 014 / 026</span>
+    </div>
+    <div>
+      <blockquote>“The best light is the one you didn't wait for — you found it.”</blockquote>
+      <cite>— Studio notes, Monsoon shoot, 2026</cite>
+    </div>
+  </div>
+
+  <div class="auth-side">
+    <div class="auth-box">
+      <h1 class="auth-title">Sign in</h1>
+      <p class="auth-sub">Access your galleries, invoices, and shoot schedule.</p>
+
+      <div class="role-toggle" role="tablist" aria-label="Account type">
+        <div class="thumb" id="thumb"></div>
+        <button type="button" class="role-btn active" data-role="client" role="tab" aria-selected="true">Client</button>
+        <button type="button" class="role-btn" data-role="admin" role="tab" aria-selected="false">Admin / Studio</button>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="auth-field">
+          <label for="loginId">Login ID or email</label>
+          <input type="text" id="loginId" placeholder="e.g. client@stackly.in" autocomplete="username" required>
+          <div class="auth-err" id="idErr"></div>
+        </div>
+        <div class="auth-field">
+          <label for="loginPass">Password</label>
+          <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password" required>
+          <div class="auth-err" id="passErr"></div>
+        </div>
+        <div class="auth-row">
+          <label class="remember">
+            <input type="checkbox" id="rememberMe">
+            Remember me
+          </label>
+          <button type="button" class="forgot-link" id="forgotBtn">Forgot password?</button>
+        </div>
+
+        <button type="submit" class="auth-submit" id="submitBtn">
+          <span class="spinner"></span>
+          <span class="label" id="submitLabel">Sign in as client</span>
+        </button>
+      </form>
+
+      <p class="auth-signup">New to Stackly? <button type="button" class="signup-link" id="signupBtn">Create an account</button></p>
+
+      <p class="auth-hint">Demo access — any login ID works.<br><b>client123</b> for client &nbsp;·&nbsp; <b>admin123</b> for admin</p>
+      <a href="index.html" class="auth-back">← Back to website</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="forgotOverlay" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
+  <div class="modal-box">
+    <h2 id="forgotTitle">Reset your password</h2>
+    <p>Enter the email linked to your account. We'll send a reset link if it matches.</p>
+    <div class="auth-field">
+      <label for="resetEmail">Email</label>
+      <input type="email" id="resetEmail" placeholder="e.g. client@stackly.in">
+      <div class="auth-err" id="resetErr"></div>
+    </div>
+    <div class="modal-success" id="resetSuccess">✓ Reset link sent — check your inbox.</div>
+    <div class="modal-actions">
+      <button type="button" class="modal-cancel" id="forgotCancel">Cancel</button>
+      <button type="button" class="modal-send" id="forgotSend">Send reset link</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentRole = 'client';
+  const roleBtns = document.querySelectorAll('.role-btn');
+  const thumb = document.getElementById('thumb');
+  const submitLabel = document.getElementById('submitLabel');
+  const submitBtn = document.getElementById('submitBtn');
+  const idInput = document.getElementById('loginId');
+  const passInput = document.getElementById('loginPass');
+
+  roleBtns.forEach((btn, i) => btn.addEventListener('click', () => {
+    roleBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+    currentRole = btn.dataset.role;
+    thumb.style.transform = i === 1 ? 'translateX(100%)' : 'translateX(0)';
+    submitLabel.textContent = currentRole === 'admin' ? 'Sign in as admin' : 'Sign in as client';
+    idInput.placeholder = currentRole === 'admin' ? 'e.g. admin@stackly.in' : 'e.g. client@stackly.in';
+    clearErrors();
+  }));
+
+  function clearErrors(){
+    [idInput, passInput].forEach(el => el.classList.remove('invalid'));
+    document.getElementById('idErr').classList.remove('show');
+    document.getElementById('passErr').classList.remove('show');
+  }
+
+  // Remember me: prefill login ID if previously saved
+  try {
+    const savedId = localStorage.getItem('stackly_rememberedId');
+    if (savedId) {
+      idInput.value = savedId;
+      document.getElementById('rememberMe').checked = true;
+    }
+  } catch(err) {}
+
+  // Forgot password modal
+  const forgotBtn = document.getElementById('forgotBtn');
+  const forgotOverlay = document.getElementById('forgotOverlay');
+  const forgotCancel = document.getElementById('forgotCancel');
+  const forgotSend = document.getElementById('forgotSend');
+  const resetEmail = document.getElementById('resetEmail');
+  const resetErr = document.getElementById('resetErr');
+  const resetSuccess = document.getElementById('resetSuccess');
+
+  function openForgot(){
+    forgotOverlay.classList.add('show');
+    resetEmail.value = idInput.value.includes('@') ? idInput.value : '';
+    resetEmail.classList.remove('invalid');
+    resetErr.classList.remove('show');
+    resetSuccess.classList.remove('show');
+    forgotSend.disabled = false;
+    forgotSend.textContent = 'Send reset link';
+    setTimeout(() => resetEmail.focus(), 50);
+  }
+  function closeForgot(){
+    forgotOverlay.classList.remove('show');
+  }
+
+  forgotBtn.addEventListener('click', openForgot);
+  forgotCancel.addEventListener('click', closeForgot);
+  forgotOverlay.addEventListener('click', (e) => { if (e.target === forgotOverlay) closeForgot(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeForgot(); });
+
+  forgotSend.addEventListener('click', () => {
+    const email = resetEmail.value.trim();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!valid) {
+      resetErr.textContent = 'Enter a valid email address.';
+      resetErr.classList.add('show');
+      resetEmail.classList.add('invalid');
+      return;
+    }
+    resetErr.classList.remove('show');
+    resetEmail.classList.remove('invalid');
+    forgotSend.disabled = true;
+    forgotSend.textContent = 'Sending…';
+    setTimeout(() => {
+      resetSuccess.classList.add('show');
+      forgotSend.textContent = 'Link sent';
+    }, 700);
+  });
+
+  signupBtn.addEventListener('click', () => { window.location.href = 'signup.html'; });
+
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = idInput.value.trim();
+    const pass = passInput.value;
+    const idErr = document.getElementById('idErr');
+    const passErr = document.getElementById('passErr');
+    clearErrors();
+
+    let ok = true;
+    if (id.length < 3) {
+      idErr.textContent = 'Enter a login ID with at least 3 characters.';
+      idErr.classList.add('show');
+      idInput.classList.add('invalid');
+      ok = false;
+    }
+
+    const expected = currentRole === 'admin' ? 'admin123' : 'client123';
+    if (pass !== expected) {
+      passErr.textContent = `Incorrect password for ${currentRole} sign-in.`;
+      passErr.classList.add('show');
+      passInput.classList.add('invalid');
+      ok = false;
+    }
+
+    if (!ok) return;
+
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+
+    try {
+      localStorage.setItem('stackly_loginId', id);
+      localStorage.setItem('stackly_role', currentRole);
+      if (document.getElementById('rememberMe').checked) {
+        localStorage.setItem('stackly_rememberedId', id);
+      } else {
+        localStorage.removeItem('stackly_rememberedId');
+      }
+    } catch(err) {}
+
+    setTimeout(() => {
+      window.location.href = currentRole === 'admin' ? 'dashboard-admin.html' : 'dashboard-client.html';
+    }, 500);
+  });
+</script>
+</body>
+</html>
